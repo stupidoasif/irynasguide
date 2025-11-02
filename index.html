@@ -5,7 +5,6 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Irynas Guide - IRYS</title>
-<!-- Favicon -->
 <link href="fevicon.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="fevicon.png" rel="apple-touch-icon"/>
 <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&amp;display=swap" rel="stylesheet"/>
@@ -19,7 +18,6 @@
       margin:0; background:#0b1020; overflow:hidden;
       position:relative; display:grid; place-items:center;
 
-      /* unselectable everywhere */
       -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none;
       -webkit-touch-callout:none;
     }
@@ -42,7 +40,6 @@
     .box{ width:350px; height:90px; border-radius:16px; background:rgba(0,255,163,.55); color:#000; display:flex; align-items:center; justify-content:center; font-size:30px; font-family:'Font1', sans-serif; backdrop-filter:blur(10px); cursor:pointer; text-decoration:none; transition: transform .25s ease, background .25s ease, opacity .4s ease; }
     .box:hover{ transform:scale(1.04); background:rgba(0,255,163,.75); }
 
-    /* footers */
     .footer, .footer-left, .footer-right{
       position:absolute; bottom:20px;
       font-family: Arial, Helvetica, sans-serif;
@@ -67,7 +64,6 @@
     body.topic-active .top-wrap, body.topic-active .container{ opacity:0; pointer-events:none; }
     body.reveal .top-wrap{ pointer-events:none; }
 
-    /* floating label */
     .lift-label{
       position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
       color:#fff; font-family:'Font1', system-ui, sans-serif; font-weight:700;
@@ -80,7 +76,6 @@
     .lift-label.to-top{ top:60px; transform:translate(-50%,0); }
     @media(max-width:480px){ .lift-label.to-top{ top:50px; } }
 
-    /* audio toggle (top-right) */
     .audio-toggle{
       position:fixed; top:16px; right:16px; z-index:20;
       display:inline-flex; align-items:center; gap:10px;
@@ -95,7 +90,6 @@
     body.reveal .audio-toggle{ opacity:1; pointer-events:auto; }
     .audio-icon{ width:18px; height:18px; display:inline-block; font-weight:700; }
 
-    /* NEW: top-left brand text */
     .brand-top-left{
       position:fixed; top:16px; left:16px; z-index:22;
       font-family:'Font1', system-ui, sans-serif;
@@ -104,10 +98,9 @@
       color:#fff;
       text-shadow:2px 2px 10px rgba(0,0,0,.6);
       opacity:.95;
-      pointer-events:none; /* not clickable text as requested; change if you want link */
+      pointer-events:none; 
     }
 
-    /* Iryna + dialogue */
     .iryna-wrap{ position:fixed; bottom:0; left:40px; display:flex; align-items:flex-end; z-index:10; opacity:0; transform:scale(0.98); pointer-events:none; transition:opacity .45s ease, transform .45s ease; }
     .iryna-wrap.show{ opacity:1; transform:scale(1); pointer-events:auto; }
     .iryna-img{ height:95vh; width:auto; object-fit:contain; margin-bottom:-5px; }
@@ -124,31 +117,24 @@
     .next-btn:hover{ background:#1d1d1d; }
   </style>
 <style>
-/* --- Iryna overlay click-behavior (state aware) --- */
 
-/* The overlay itself never captures clicks; only specific parts do when shown */
 .iryna-wrap { pointer-events: none !important; }
 .iryna-wrap.show { pointer-events: none !important; }
 
-/* Comic box is only interactive while the dialogue is visible */
 .iryna-wrap .comic-box,
 .iryna-wrap .comic-box * { pointer-events: none !important; }
 
 .iryna-wrap.show .comic-box,
 .iryna-wrap.show .comic-box * { pointer-events: auto !important; }
 
-/* Character image should never eat clicks */
 .iryna-img { pointer-events: none !important; }
 
-/* Ensure footers and the main topic buttons remain clickable at all times
-   (they may sit underneath the overlay visually) */
 .container, .footer, .footer-left, .footer-right { pointer-events: auto !important; }
 </style></head>
 <body ondragstart="return false" onselectstart="return false">
 <video autoplay="" draggable="false" id="bgVideo" loop="" muted="">
 <source src="bg.webm" type="video/webm"/>
 </video>
-<!-- NEW: top-left text -->
 <div class="brand-top-left">Irynas Guide - IRYS</div>
 <audio id="bgMusic" loop="" playsinline="" preload="auto">
 <source src="music.mp3" type="audio/mpeg"/>
@@ -178,7 +164,6 @@
 <img alt="" class="comic-side-img" draggable="false" id="comicSideImg" src="Untitled (26).png"/>
 </div>
 </div>
-<!-- FOOTERS -->
 <div class="footer">
     Created by <a href="https://x.com/stupidoasif" rel="noopener" target="_blank">stupidoasif</a> —
     click here to follow me on X
@@ -219,7 +204,6 @@
       const music = document.getElementById('bgMusic');
       const toggle= document.getElementById('audioToggle');
 
-      // Set default volume to 30%
       music.volume = 0.3;
 
       const discordDialogues = [
@@ -251,7 +235,7 @@
       }
       async function startMusic(){ 
         try{
-          music.volume = 0.3; // enforce on play
+          music.volume = 0.3; 
           await music.play();
           setAudioUI(true);
         } catch{
