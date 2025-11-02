@@ -3,32 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Irynas Guide - IRYS</title>
+  <title>Irynas Guide - IRYS (Mobile)</title>
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="fevicon.png" />
   <link rel="apple-touch-icon" href="fevicon.png" />
 
-  <!-- Fonts (perf + fallback) -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet" />
 
   <style>
     /* ---------- Fonts ---------- */
-    @font-face {
-      font-family: "Font1";
-      src: url("font.woff") format("woff");
-      font-display: swap;
-    }
-    @font-face {
-      font-family: "Font2";
-      src: url("Loverine.woff") format("woff");
-      font-display: swap;
-    }
+    @font-face { font-family: "Font1"; src: url("font.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "Font2"; src: url("Loverine.woff") format("woff"); font-display: swap; }
 
-    /* ---------- Reset / tokens ---------- */
-    :root { --mint: #00ffa3; --bg: #0b1020; --glass: rgba(255,255,255,.14) }
+    /* ---------- Base ---------- */
+    :root { --mint:#00ffa3; --bg:#0b1020; --glass:rgba(255,255,255,.14) }
     html, body { height: 100%; }
     html { color-scheme: dark; }
     body {
@@ -38,78 +28,61 @@
       display: grid;
       place-items: center;
       position: relative;
+      overflow-x: hidden;
     }
-
-    /* Allow selecting by default (improves UX); restrict only where needed */
     img, video { -webkit-user-drag: none; user-drag: none; }
 
-    /* Background video / image fallback */
+    /* Background */
     .bg-media {
-      position: fixed; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      z-index: -1;
+      position: fixed; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; z-index: -1;
     }
 
-    /* Top hero */
+    /* Top / hero */
     .top-wrap { position: absolute; inset: 0; z-index: 3; transition: opacity .6s ease; }
     .top-inner {
       position: absolute; left: 50%; top: 50%;
-      transform: translate(-50%,-50%);
-      text-align: center;
+      transform: translate(-50%,-50%); text-align: center;
       transition: top 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1);
       padding: 0 16px;
     }
     .top-text {
-      margin: 0 0 24px;
-      color: #fff;
+      margin: 0 0 24px; color: #fff;
       font-family: "Font2", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      font-size: clamp(40px, 9vw, 110px);
-      font-weight: 700;
-      line-height: 1.05;
-      text-shadow: 4px 4px 14px rgba(0,0,0,.9);
-      transition: opacity 400ms ease;
+      font-size: clamp(40px, 9vw, 110px); font-weight: 700; line-height: 1.05;
+      text-shadow: 4px 4px 14px rgba(0,0,0,.9); transition: opacity 400ms ease;
     }
-
     .cta {
       display: inline-flex; align-items: center; justify-content: center;
       min-width: 180px; padding: 14px 22px;
       border-radius: 14px; background: var(--glass);
-      color: #fff; border: 1px solid rgba(255,255,255,.28);
-      font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      font-size: 18px; letter-spacing: .2px; font-weight: 600;
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      cursor: pointer;
-      transition: transform .2s ease, opacity .3s ease, background .2s ease;
+      color:#fff; border:1px solid rgba(255,255,255,.28);
+      font-family:"Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size:18px; font-weight:600; letter-spacing:.2px;
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      cursor:pointer; transition: transform .2s, opacity .3s, background .2s;
     }
     .cta:hover { transform: translateY(-2px) scale(1.02); }
     .cta:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
 
     /* Topics */
     .container {
-      position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px;
-      opacity: 0; transform: translateY(24px);
+      position: relative; display:flex; flex-direction:column; align-items:center; gap:18px;
+      opacity:0; transform:translateY(24px);
       transition: opacity 600ms ease 100ms, transform 600ms ease 100ms;
-      z-index: 2; pointer-events: none; padding: 20px;
-      width: min(680px, 100% - 32px);
+      z-index:2; pointer-events:none; padding:20px; width:min(680px, 100% - 32px);
     }
     .box {
-      width: min(480px, 100%);
-      min-height: 64px;
-      border-radius: 16px;
-      background: rgba(0,255,163,.55);
-      color: #000; display: flex; align-items: center; justify-content: center;
+      width:min(480px,100%); min-height:64px; border-radius:16px;
+      background:rgba(0,255,163,.55); color:#000; display:flex; align-items:center; justify-content:center;
       font-size: clamp(18px, 3.8vw, 28px);
-      font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      cursor: pointer; text-decoration: none;
-      transition: transform .2s ease, background .2s ease, opacity .4s;
-      padding: 10px 14px;
+      font-family:"Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      cursor:pointer; text-decoration:none; transition: transform .2s, background .2s, opacity .4s;
+      padding:10px 14px;
     }
     .box:hover { transform: scale(1.03); background: rgba(0,255,163,.75); }
-    .box:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .box:focus-visible { outline:2px solid #fff; outline-offset:3px; }
 
     /* Footers */
     .footer, .footer-left, .footer-right {
@@ -138,32 +111,25 @@
     .lift-label {
       position: fixed; left: 50%; top: 50%;
       transform: translate(-50%,-50%);
-      color: #fff; font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; font-weight: 700;
+      color:#fff; font-family:"Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; font-weight:700;
       font-size: clamp(32px, 8vw, 72px);
       text-shadow: 4px 4px 12px rgba(0,0,0,.7);
-      pointer-events: none; z-index: 40; white-space: nowrap; opacity: 1;
+      pointer-events:none; z-index:40; white-space:nowrap; opacity:1;
       transition: top 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1), opacity 400ms ease;
-      padding: 0 12px;
-      text-align: center;
+      padding:0 12px; text-align:center;
     }
     .lift-label.to-top { top: max(60px, calc(env(safe-area-inset-top, 0px) + 50px)); transform: translate(-50%,0); }
-    @media (max-width: 480px) { .lift-label.to-top { top: max(50px, calc(env(safe-area-inset-top, 0px) + 42px)); } }
 
-    /* Audio toggle (top-right) */
+    /* Audio toggle */
     .audio-toggle {
       position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); right: calc(env(safe-area-inset-right, 0px) + 12px); z-index: 20;
       display: inline-flex; align-items: center; gap: 10px;
       padding: 10px 14px; border-radius: 12px;
-      font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; font-size: 16px;
-      color: #fff; background: rgba(0,0,0,.45);
-      border: 1px solid rgba(255,255,255,.25);
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
-      cursor: pointer; opacity: 0; pointer-events: none;
-      transition: opacity .3s ease, transform .2s ease, background .2s ease;
-    }
-    @supports not ((-webkit-backdrop-filter: blur(8px)) or (backdrop-filter: blur(8px))) {
-      .audio-toggle, .cta, .box { background: rgba(0,0,0,.5); }
+      font-family:"Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; font-size:16px;
+      color:#fff; background: rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.25);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      cursor:pointer; opacity:0; pointer-events:none; transition: opacity .3s, transform .2s, background .2s;
     }
     .audio-toggle:hover { transform: translateY(-1px); background: rgba(0,0,0,.55); }
     body.reveal .audio-toggle { opacity: 1; pointer-events: auto; }
@@ -174,42 +140,34 @@
       position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); left: calc(env(safe-area-inset-left, 0px) + 12px); z-index: 22;
       font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       font-size: clamp(18px, 2.4vw, 24px);
-      letter-spacing: .4px; color: #fff; text-shadow: 2px 2px 10px rgba(0,0,0,.6); opacity: .95;
-      pointer-events: none;
+      letter-spacing: .4px; color:#fff; text-shadow: 2px 2px 10px rgba(0,0,0,.6); opacity:.95;
+      pointer-events:none;
     }
 
-    /* Iryna + dialogue */
+    /* Iryna + dialogue (desktop defaults) */
     .iryna-wrap {
-      position: fixed; bottom: 0; left: 40px; display: flex; align-items: flex-end; z-index: 10;
-      opacity: 0; transform: scale(.98); pointer-events: none;
+      position: fixed; bottom: 0; left: 40px; display:flex; align-items:flex-end; z-index:10;
+      opacity:0; transform: scale(.98); pointer-events:none;
       transition: opacity .45s ease, transform .45s ease;
       max-width: min(100%, 1280px);
     }
     .iryna-wrap.show { opacity: 1; transform: scale(1); }
     .iryna-img { height: 70svh; max-height: 95vh; width: auto; object-fit: contain; margin-bottom: -5px; }
-
     .comic-box {
-      background: #fff; color: #000;
-      border: 4px solid #000; border-radius: 18px; padding: 18px 20px;
-      font-family: "Comic Neue", "Comic Sans MS", cursive; font-size: clamp(16px, 2.4vw, 22px); line-height: 1.4;
-      max-width: min(90vw, 720px);
-      position: relative; box-shadow: 6px 6px 0 #000;
-      margin-left: clamp(-40px, -12vw, -180px);
-      margin-bottom: clamp(120px, 24svh, 360px);
-      display: flex; align-items: center; gap: 14px;
-      opacity: 0; transform: translateY(10px);
-      transition: opacity .45s ease, transform .45s ease;
+      background:#fff; color:#000; border:4px solid #000; border-radius:18px; padding:18px 20px;
+      font-family:"Comic Neue","Comic Sans MS",cursive; font-size:clamp(16px, 2.4vw, 22px); line-height:1.4;
+      max-width: min(90vw, 720px); position: relative; box-shadow: 6px 6px 0 #000;
+      margin-left: clamp(-40px, -12vw, -180px); margin-bottom: clamp(120px, 24svh, 360px);
+      display:flex; align-items:center; gap:14px;
+      opacity:0; transform: translateY(10px); transition: opacity .45s, transform .45s;
     }
     .iryna-wrap.show .comic-box { opacity: 1; transform: translateY(0); }
-    .comic-side-img { width: clamp(140px, 24vw, 220px); height: auto; border-radius: 16px; display: none; align-self: center; }
-    .next-btn {
-      margin-top: 10px; background: #000; color: #fff; border: none; padding: 10px 16px; border-radius: 10px;
-      cursor: pointer; font-size: 16px;
-    }
-    .next-btn:hover { background: #1d1d1d; }
-    .next-btn:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
+    .comic-side-img { width: clamp(140px, 24vw, 220px); height:auto; border-radius:16px; display:none; align-self:center; }
+    .next-btn { margin-top:10px; background:#000; color:#fff; border:none; padding:10px 16px; border-radius:10px; cursor:pointer; font-size:16px; }
+    .next-btn:hover { background:#1d1d1d; }
+    .next-btn:focus-visible { outline:2px solid #000; outline-offset:3px; }
 
-    /* Pointer-events policy so underlying content remains usable */
+    /* Pointer-events policy */
     .iryna-wrap, .iryna-wrap.show { pointer-events: none !important; }
     .iryna-wrap .comic-box, .iryna-wrap .comic-box * { pointer-events: none !important; }
     .iryna-wrap.show .comic-box, .iryna-wrap.show .comic-box * { pointer-events: auto !important; }
@@ -218,8 +176,86 @@
 
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
-      * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+      * { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
       .top-inner, .lift-label { transition: none; }
+    }
+
+    /* === MOBILE RE-ORGANIZE + HOTFIX (with !important for reliability) === */
+    @media (max-width: 820px) {
+      html, body { height: auto; }
+      body { min-height: 100svh; overflow: auto; padding-bottom: 16px; }
+
+      /* brand sits in-flow to avoid covering header text */
+      .brand-top-left {
+        position: relative !important; top: auto !important; left: auto !important;
+        padding: 12px 16px; margin: 0 auto 4px; width: 100%; text-align: left;
+      }
+
+      /* move audio to bottom-right on phones */
+      .audio-toggle {
+        position: fixed !important;
+        top: auto !important;
+        right: 12px !important;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 12px) !important;
+        left: auto !important;
+        z-index: 30 !important;
+      }
+
+      /* hero becomes stacked */
+      .top-wrap { position: relative !important; inset: auto !important; opacity: 1 !important; }
+      .top-inner { position: relative !important; left: auto !important; top: auto !important; transform: none !important; padding: 12px 16px !important; text-align: center !important; }
+      body.reveal .top-inner { top: auto !important; transform: none !important; }
+      .top-text { font-size: clamp(32px, 10vw, 48px) !important; line-height: 1.08 !important; margin: 0 0 10px !important; text-wrap: balance; }
+      .cta { margin: 0 auto 6px !important; }
+
+      /* topics */
+      .container {
+        position: relative !important; width: 100% !important; max-width: none !important;
+        padding: 12px !important; gap: 12px !important;
+        transform: none !important; opacity: 1 !important; pointer-events: auto !important;
+      }
+      .box { width: 100% !important; min-height: 56px !important; }
+
+      /* Iryna + dialogue: center + stack */
+      #irynaWrap {
+        position: relative !important; left: 0 !important; bottom: auto !important;
+        margin: 16px auto !important; width: 100% !important; max-width: 720px !important;
+        display: flex !important; flex-direction: column !important; align-items: center !important;
+        z-index: 5 !important; padding: 0 12px !important; transform: none !important; opacity: 1 !important; pointer-events: auto !important;
+      }
+      #irynaWrap .iryna-img {
+        width: min(80vw, 420px) !important; max-width: 100% !important; height: auto !important; max-height: 55vh !important; margin: 0 auto !important;
+      }
+      #irynaWrap .comic-box {
+        position: relative !important;
+        margin: 12px 0 0 0 !important;          /* remove negative left offset */
+        left: auto !important; right: auto !important;
+        width: 100% !important; max-width: 100% !important;
+        transform: none !important; opacity: 1 !important;
+      }
+      #irynaWrap .comic-side-img {
+        display: block !important; width: 100% !important; height: auto !important;
+        margin-top: 10px !important; border-radius: 12px !important;
+      }
+
+      /* keep content tappable during topics */
+      body.topic-active .top-wrap,
+      body.topic-active .container { opacity: 1 !important; pointer-events: auto !important; }
+
+      /* footers in-flow */
+      .footer, .footer-left, .footer-right {
+        position: relative !important; bottom: auto !important; left: auto !important; right: auto !important;
+        transform: none !important; text-align: center !important;
+        padding: 10px 12px !important; margin: 6px 0 !important; opacity: .95 !important; display: block !important;
+      }
+
+      /* hide floating lift label to prevent header overlap */
+      .lift-label { display: none !important; }
+    }
+
+    @media (max-width: 360px) {
+      .top-text { font-size: 28px; }
+      .box { min-height: 50px; }
     }
   </style>
 </head>
@@ -227,21 +263,15 @@
   <!-- Background video with image fallback -->
   <video id="bgVideo" class="bg-media" autoplay muted loop playsinline poster="bg-poster.jpg" aria-hidden="true">
     <source src="bg.webm" type="video/webm" />
-    <!-- Optional MP4 for Safari/older browsers -->
     <source src="bg.mp4" type="video/mp4" />
   </video>
-  <picture>
-    <!-- Fallback still image for browsers blocking autoplay/video -->
-    <img src="bg-poster.jpg" alt="" class="bg-media" style="display:none" fetchpriority="low" />
-  </picture>
-  <noscript>
-    <img src="bg-poster.jpg" alt="" class="bg-media" />
-  </noscript>
+  <picture><img src="bg-poster.jpg" alt="" class="bg-media" style="display:none" fetchpriority="low" /></picture>
+  <noscript><img src="bg-poster.jpg" alt="" class="bg-media" /></noscript>
 
   <!-- Brand -->
   <div class="brand-top-left">Irynas Guide - IRYS</div>
 
-  <!-- Audio (won't play until user interaction) -->
+  <!-- Audio -->
   <audio id="bgMusic" preload="auto">
     <source src="music.mp3" type="audio/mpeg" />
     <source src="bgm.webm" type="audio/webm" />
@@ -254,7 +284,7 @@
   <!-- Hero -->
   <div class="top-wrap" aria-hidden="true">
     <div class="top-inner">
-      <h1 class="top-text">How can I<br />contribute to Irys?</h1>
+      <h1 class="top-text">How can I<br/>contribute to Irys?</h1>
       <button id="learnBtn" class="cta" type="button">Let’s learn</button>
     </div>
   </div>
@@ -290,7 +320,7 @@
     <a href="https://discord.com/invite/irys" target="_blank" rel="noopener">Discord</a>
   </div>
 
-  <!-- Scripts (defer) -->
+  <!-- Scripts -->
   <script defer>
     (function () {
       function reveal(){ document.body.classList.add('reveal'); }
@@ -317,10 +347,7 @@
         const toggle= document.getElementById('audioToggle');
         const bgVid = document.getElementById('bgVideo');
 
-        // Default volume
         music.volume = 0.3;
-
-        // Respect reduced motion
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReduced && bgVid) { try { bgVid.pause(); } catch(e){} }
 
@@ -345,7 +372,7 @@
           document.body.classList.remove('topic-active');
           clearLift();
           iryna.classList.remove('show');
-          setAudioUI(false); // will change on play
+          setAudioUI(false);
         }
         learn.addEventListener('click', onLearn);
         learn.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); onLearn(e);} });
@@ -374,6 +401,8 @@
         function applyLine(){
           textEl.innerHTML = dialogue[idx];
           side.style.display = 'none';
+          side.removeAttribute('src'); side.alt = '';
+
           if(active==='discord'){
             if(idx===1){ side.src="Untitled (26).png"; side.alt="Irys Discord invite"; side.style.display='block'; }
             else if(idx===2){ side.src="Screenshot 2025-11-02 143805.png"; side.alt="Discord Apprentice channels"; side.style.display='block'; }
@@ -394,26 +423,30 @@
           active = which;
           dialogue = (which==='discord')?discordDialogues:galxeDialogues;
           idx = 0;
-          liftToTopFrom(buttonEl);
-          iryna.classList.add('show');
+          liftToTopFrom(buttonEl);                    // desktop behavior; hidden on mobile via CSS
+          document.getElementById('irynaWrap').classList.add('show');
           applyLine();
-          // Start music on explicit user action
-          startMusic();
+          startMusic();                               // user gesture happened
+          setTimeout(()=>{ window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }, 50);
         }
 
         nextEl.addEventListener('click', ()=>{
           if(idx >= dialogue.length - 1){
-            iryna.classList.remove('show');
+            document.getElementById('irynaWrap').classList.remove('show');
             document.body.classList.remove('topic-active');
             clearLift();
             return;
           }
           idx++;
           applyLine();
+          setTimeout(()=>{ window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }, 10);
         });
 
-        disc.addEventListener('click', ()=> openDialogue('discord', disc));
-        galx.addEventListener('click', ()=> openDialogue('galxe', galx));
+        document.getElementById('discordBtn').addEventListener('click', ()=> openDialogue('discord', document.getElementById('discordBtn')));
+        document.getElementById('galxeBtn').addEventListener('click', ()=> openDialogue('galxe', document.getElementById('galxeBtn')));
+
+        /* Safety: remove any floating label on small screens to prevent overlap */
+        if (matchMedia('(max-width: 820px)').matches) { clearLift(); }
       });
     })();
   </script>
