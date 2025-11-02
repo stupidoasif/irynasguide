@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Irynas Guide - IRYS</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="fevicon.png" />
+  <link rel="apple-touch-icon" href="fevicon.png" />
+
+  <!-- Fonts (perf + fallback) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ---------- Fonts ---------- */
+    @font-face {
+      font-family: "Font1";
+      src: url("font.woff") format("woff");
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Font2";
+      src: url("Loverine.woff") format("woff");
+      font-display: swap;
+    }
+
+    /* ---------- Reset / tokens ---------- */
+    :root { --mint: #00ffa3; --bg: #0b1020; --glass: rgba(255,255,255,.14) }
+    html, body { height: 100%; }
+    html { color-scheme: dark; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    /* Allow selecting by default (improves UX); restrict only where needed */
+    img, video { -webkit-user-drag: none; user-drag: none; }
+
+    /* Background video / image fallback */
+    .bg-media {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    /* Top hero */
+    .top-wrap { position: absolute; inset: 0; z-index: 3; transition: opacity .6s ease; }
+    .top-inner {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      text-align: center;
+      transition: top 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1);
+      padding: 0 16px;
+    }
+    .top-text {
+      margin: 0 0 24px;
+      color: #fff;
+      font-family: "Font2", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: clamp(40px, 9vw, 110px);
+      font-weight: 700;
+      line-height: 1.05;
+      text-shadow: 4px 4px 14px rgba(0,0,0,.9);
+      transition: opacity 400ms ease;
+    }
+
+    .cta {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 180px; padding: 14px 22px;
+      border-radius: 14px; background: var(--glass);
+      color: #fff; border: 1px solid rgba(255,255,255,.28);
+      font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: 18px; letter-spacing: .2px; font-weight: 600;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      transition: transform .2s ease, opacity .3s ease, background .2s ease;
+    }
+    .cta:hover { transform: translateY(-2px) scale(1.02); }
+    .cta:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
+
+    /* Topics */
+    .container {
+      position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 600ms ease 100ms, transform 600ms ease 100ms;
+      z-index: 2; pointer-events: none; padding: 20px;
+      width: min(680px, 100% - 32px);
+    }
+    .box {
+      width: min(480px, 100%);
+      min-height: 64px;
+      border-radius: 16px;
+      background: rgba(0,255,163,.55);
+      color: #000; display: flex; align-items: center; justify-content: center;
+      font-size: clamp(18px, 3.8vw, 28px);
+      font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      cursor: pointer; text-decoration: none;
+      transition: transform .2s ease, background .2s ease, opacity .4s;
+      padding: 10px 14px;
+    }
+    .box:hover { transform: scale(1.03); background: rgba(0,255,163,.75); }
+    .box:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+    /* Footers */
+    .footer, .footer-left, .footer-right {
+      position: absolute; bottom: env(safe-area-inset-bottom, 20px);
+      font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #ffffffcc;
+      z-index: 2; opacity: 0; transform: translateY(20px);
+      transition: opacity 600ms ease 300ms, transform 600ms ease 300ms;
+      padding: 0 16px;
+    }
+    .footer { left: 0; right: 0; text-align: center; }
+    .footer-left { left: 0; }
+    .footer-right { right: 0; }
+    .footer a, .footer-left a, .footer-right a { color: var(--mint); text-decoration: none; }
+    .footer a:hover, .footer-left a:hover, .footer-right a:hover { text-decoration: underline; }
+
+    /* Reveal states */
+    body.reveal .top-inner { top: max(70px, env(safe-area-inset-top, 24px)); transform: translate(-50%,0); }
+    body.reveal .cta { opacity: 0; pointer-events: none; }
+    body.reveal .container { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    body.reveal .footer, body.reveal .footer-left, body.reveal .footer-right { opacity: 1; transform: translateY(0); }
+    body.topic-active .top-text { opacity: 0; }
+    body.topic-active .top-wrap, body.topic-active .container { opacity: 0; pointer-events: none; }
+    body.reveal .top-wrap { pointer-events: none; }
+
+    /* Lift label */
+    .lift-label {
+      position: fixed; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      color: #fff; font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; font-weight: 700;
+      font-size: clamp(32px, 8vw, 72px);
+      text-shadow: 4px 4px 12px rgba(0,0,0,.7);
+      pointer-events: none; z-index: 40; white-space: nowrap; opacity: 1;
+      transition: top 700ms cubic-bezier(.22,.61,.36,1), transform 700ms cubic-bezier(.22,.61,.36,1), opacity 400ms ease;
+      padding: 0 12px;
+      text-align: center;
+    }
+    .lift-label.to-top { top: max(60px, calc(env(safe-area-inset-top, 0px) + 50px)); transform: translate(-50%,0); }
+    @media (max-width: 480px) { .lift-label.to-top { top: max(50px, calc(env(safe-area-inset-top, 0px) + 42px)); } }
+
+    /* Audio toggle (top-right) */
+    .audio-toggle {
+      position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); right: calc(env(safe-area-inset-right, 0px) + 12px); z-index: 20;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 12px;
+      font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; font-size: 16px;
+      color: #fff; background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.25);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      cursor: pointer; opacity: 0; pointer-events: none;
+      transition: opacity .3s ease, transform .2s ease, background .2s ease;
+    }
+    @supports not ((-webkit-backdrop-filter: blur(8px)) or (backdrop-filter: blur(8px))) {
+      .audio-toggle, .cta, .box { background: rgba(0,0,0,.5); }
+    }
+    .audio-toggle:hover { transform: translateY(-1px); background: rgba(0,0,0,.55); }
+    body.reveal .audio-toggle { opacity: 1; pointer-events: auto; }
+    .audio-icon { width: 18px; height: 18px; display: inline-block; font-weight: 700; }
+
+    /* Brand */
+    .brand-top-left {
+      position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); left: calc(env(safe-area-inset-left, 0px) + 12px); z-index: 22;
+      font-family: "Font1", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: clamp(18px, 2.4vw, 24px);
+      letter-spacing: .4px; color: #fff; text-shadow: 2px 2px 10px rgba(0,0,0,.6); opacity: .95;
+      pointer-events: none;
+    }
+
+    /* Iryna + dialogue */
+    .iryna-wrap {
+      position: fixed; bottom: 0; left: 40px; display: flex; align-items: flex-end; z-index: 10;
+      opacity: 0; transform: scale(.98); pointer-events: none;
+      transition: opacity .45s ease, transform .45s ease;
+      max-width: min(100%, 1280px);
+    }
+    .iryna-wrap.show { opacity: 1; transform: scale(1); }
+    .iryna-img { height: 70svh; max-height: 95vh; width: auto; object-fit: contain; margin-bottom: -5px; }
+
+    .comic-box {
+      background: #fff; color: #000;
+      border: 4px solid #000; border-radius: 18px; padding: 18px 20px;
+      font-family: "Comic Neue", "Comic Sans MS", cursive; font-size: clamp(16px, 2.4vw, 22px); line-height: 1.4;
+      max-width: min(90vw, 720px);
+      position: relative; box-shadow: 6px 6px 0 #000;
+      margin-left: clamp(-40px, -12vw, -180px);
+      margin-bottom: clamp(120px, 24svh, 360px);
+      display: flex; align-items: center; gap: 14px;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .iryna-wrap.show .comic-box { opacity: 1; transform: translateY(0); }
+    .comic-side-img { width: clamp(140px, 24vw, 220px); height: auto; border-radius: 16px; display: none; align-self: center; }
+    .next-btn {
+      margin-top: 10px; background: #000; color: #fff; border: none; padding: 10px 16px; border-radius: 10px;
+      cursor: pointer; font-size: 16px;
+    }
+    .next-btn:hover { background: #1d1d1d; }
+    .next-btn:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
+
+    /* Pointer-events policy so underlying content remains usable */
+    .iryna-wrap, .iryna-wrap.show { pointer-events: none !important; }
+    .iryna-wrap .comic-box, .iryna-wrap .comic-box * { pointer-events: none !important; }
+    .iryna-wrap.show .comic-box, .iryna-wrap.show .comic-box * { pointer-events: auto !important; }
+    .iryna-img { pointer-events: none !important; }
+    .container, .footer, .footer-left, .footer-right { pointer-events: auto !important; }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+      .top-inner, .lift-label { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background video with image fallback -->
+  <video id="bgVideo" class="bg-media" autoplay muted loop playsinline poster="bg-poster.jpg" aria-hidden="true">
+    <source src="bg.webm" type="video/webm" />
+    <!-- Optional MP4 for Safari/older browsers -->
+    <source src="bg.mp4" type="video/mp4" />
+  </video>
+  <picture>
+    <!-- Fallback still image for browsers blocking autoplay/video -->
+    <img src="bg-poster.jpg" alt="" class="bg-media" style="display:none" fetchpriority="low" />
+  </picture>
+  <noscript>
+    <img src="bg-poster.jpg" alt="" class="bg-media" />
+  </noscript>
+
+  <!-- Brand -->
+  <div class="brand-top-left">Irynas Guide - IRYS</div>
+
+  <!-- Audio (won't play until user interaction) -->
+  <audio id="bgMusic" preload="auto">
+    <source src="music.mp3" type="audio/mpeg" />
+    <source src="bgm.webm" type="audio/webm" />
+  </audio>
+  <button id="audioToggle" class="audio-toggle" type="button" aria-label="Play music" aria-pressed="false">
+    <span class="audio-icon" aria-hidden="true">▶︎</span>
+    <span class="audio-label">Play</span>
+  </button>
+
+  <!-- Hero -->
+  <div class="top-wrap" aria-hidden="true">
+    <div class="top-inner">
+      <h1 class="top-text">How can I<br />contribute to Irys?</h1>
+      <button id="learnBtn" class="cta" type="button">Let’s learn</button>
+    </div>
+  </div>
+
+  <!-- Topics -->
+  <div id="topics" class="container">
+    <button id="discordBtn" class="box" type="button">Discord</button>
+    <button id="galxeBtn" class="box" type="button">Galxe</button>
+  </div>
+
+  <!-- Dialogue -->
+  <div id="irynaWrap" class="iryna-wrap" aria-live="polite">
+    <img src="Untitled (25).png" alt="Iryna character" class="iryna-img" loading="lazy" />
+    <div class="comic-box" role="dialog" aria-modal="false" aria-label="Iryna guidance">
+      <div class="comic-content">
+        <p id="comicText" class="comic-text">Hey, I am Iryna.</p>
+        <button id="nextBtn" class="next-btn" type="button">Next</button>
+      </div>
+      <img id="comicSideImg" class="comic-side-img" alt="" loading="lazy" />
+    </div>
+  </div>
+
+  <!-- Footers -->
+  <div class="footer">
+    Created by <a href="https://x.com/stupidoasif" target="_blank" rel="noopener">stupidoasif</a> — click here to follow me on X
+  </div>
+  <div class="footer-left">
+    <a href="https://irys.xyz/" target="_blank" rel="noopener">Learn more about Irys...</a>
+  </div>
+  <div class="footer-right">
+    Social Links:
+    <a href="https://x.com/irys_xyz" target="_blank" rel="noopener">X</a> •
+    <a href="https://discord.com/invite/irys" target="_blank" rel="noopener">Discord</a>
+  </div>
+
+  <!-- Scripts (defer) -->
+  <script defer>
+    (function () {
+      function reveal(){ document.body.classList.add('reveal'); }
+      function liftToTopFrom(el){
+        const old=document.querySelector('.lift-label'); if(old) old.remove();
+        const ghost=document.createElement('div');
+        ghost.className='lift-label';
+        ghost.textContent=(el?.textContent||'').trim();
+        document.body.appendChild(ghost);
+        requestAnimationFrame(()=>ghost.classList.add('to-top'));
+      }
+      function clearLift(){ document.querySelector('.lift-label')?.remove(); }
+      function ready(fn){ document.readyState!=='loading'?fn():document.addEventListener('DOMContentLoaded',fn); }
+
+      ready(function(){
+        const learn = document.getElementById('learnBtn');
+        const disc  = document.getElementById('discordBtn');
+        const galx  = document.getElementById('galxeBtn');
+        const iryna = document.getElementById('irynaWrap');
+        const textEl= document.getElementById('comicText');
+        const nextEl= document.getElementById('nextBtn');
+        const side  = document.getElementById('comicSideImg');
+        const music = document.getElementById('bgMusic');
+        const toggle= document.getElementById('audioToggle');
+        const bgVid = document.getElementById('bgVideo');
+
+        // Default volume
+        music.volume = 0.3;
+
+        // Respect reduced motion
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced && bgVid) { try { bgVid.pause(); } catch(e){} }
+
+        function setAudioUI(playing){
+          toggle.setAttribute('aria-pressed', String(playing));
+          toggle.querySelector('.audio-icon').textContent = playing ? '⏸' : '▶︎';
+          toggle.querySelector('.audio-label').textContent = playing ? 'Pause' : 'Play';
+          toggle.setAttribute('aria-label', playing ? 'Pause music' : 'Play music');
+        }
+        async function startMusic(){
+          try { await music.play(); setAudioUI(true); }
+          catch { setAudioUI(false); }
+        }
+        toggle.addEventListener('click', async ()=>{
+          if (music.paused) { await startMusic(); }
+          else { music.pause(); setAudioUI(false); }
+        });
+
+        function onLearn(e){
+          e?.preventDefault();
+          reveal();
+          document.body.classList.remove('topic-active');
+          clearLift();
+          iryna.classList.remove('show');
+          setAudioUI(false); // will change on play
+        }
+        learn.addEventListener('click', onLearn);
+        learn.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); onLearn(e);} });
+
+        const discordDialogues = [
+          "Hey, I am Iryna.",
+          `Welcome! Let me show you how to contribute to the <a href="https://discord.com/invite/irys" target="_blank" rel="noopener">Irys Discord server</a>.`,
+          'Join, say hi, and grab your <span style="color:#918cd7;">Full Access (Deshi)</span> roles by contributing in these channels to begin your journey.',
+          'After getting <span style="color:#918cd7;">Full Access</span>, new channels will be unlocked. Contribute in <span style="color:#00BFFF;">#hangout</span>, <span style="color:#FF69B4;">#creators</span>, and <span style="color:#ADD8E6;">#writers</span>. I’ll surprise you by upgrading your role: <span style="color:orange;">Shugo</span> → <span style="color:gold;">Senshi</span> → <span style="color:purple;">Shihan</span>!',
+          'If you’ve reached <span style="color:orange;">Shugo</span>, you’re closer to me! Talk to me directly in <span style="color:#ff8ac2;">#iryna</span>.',
+          'Goodbye for now — meet me there on Discord!'
+        ];
+        const galxeDialogues = [
+          "Hey, I am Iryna. Welcome to Irys Galxe!",
+          'Here’s the official <a href="https://app.galxe.com/quest/Irys?sort=Trending" target="_blank" rel="noopener">Irys Galxe page</a>.',
+          "Connect your Galxe wallet to continue.",
+          "Complete social and game quests, then claim your points.",
+          "Complete daily quests, claim points, and climb the leaderboard.",
+          "True contributors will be rewarded — keep contributing!"
+        ];
+
+        let active='discord';
+        let dialogue=discordDialogues;
+        let idx=0;
+
+        function applyLine(){
+          textEl.innerHTML = dialogue[idx];
+          side.style.display = 'none';
+          if(active==='discord'){
+            if(idx===1){ side.src="Untitled (26).png"; side.alt="Irys Discord invite"; side.style.display='block'; }
+            else if(idx===2){ side.src="Screenshot 2025-11-02 143805.png"; side.alt="Discord Apprentice channels"; side.style.display='block'; }
+            else if(idx===3){ side.src="Screenshot 2025-11-02 151506.png"; side.alt="Discord Full Access Channels"; side.style.display='block'; }
+            else if(idx===4){ side.src="Screenshot 2025-11-02 152631.png"; side.alt="Iryna Channels"; side.style.display='block'; }
+          } else {
+            if(idx===1){ side.src="Screenshot 2025-11-02 161548.png"; side.alt="Irys Galxe page"; side.style.display='block'; }
+            else if(idx===2){ side.src="image.png"; side.alt="Connect Galxe wallet"; side.style.display='block'; }
+            else if(idx===3){ side.src="Screenshot 2025-11-02 163550.png"; side.alt="Galxe quests grid"; side.style.display='block'; }
+            else if(idx===4){ side.src="e56c19e2-297c-465c-adbe-9eb0b920fe3d.png"; side.alt="Leaderboard"; side.style.display='block'; }
+          }
+          nextEl.textContent = (idx===dialogue.length-1)?'Finish':'Next';
+        }
+
+        function openDialogue(which, buttonEl){
+          if(!document.body.classList.contains('reveal')) reveal();
+          document.body.classList.add('topic-active');
+          active = which;
+          dialogue = (which==='discord')?discordDialogues:galxeDialogues;
+          idx = 0;
+          liftToTopFrom(buttonEl);
+          iryna.classList.add('show');
+          applyLine();
+          // Start music on explicit user action
+          startMusic();
+        }
+
+        nextEl.addEventListener('click', ()=>{
+          if(idx >= dialogue.length - 1){
+            iryna.classList.remove('show');
+            document.body.classList.remove('topic-active');
+            clearLift();
+            return;
+          }
+          idx++;
+          applyLine();
+        });
+
+        disc.addEventListener('click', ()=> openDialogue('discord', disc));
+        galx.addEventListener('click', ()=> openDialogue('galxe', galx));
+      });
+    })();
+  </script>
+</body>
+</html>
