@@ -3,34 +3,60 @@
 <head>
   <meta charset="utf-8" />
   <title>Loading…</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script>
     (function () {
-      // Manual override via query (?desktop=1 or ?mobile=1)
       const p = new URLSearchParams(location.search);
+
+      // Manual overrides
       if (p.has('desktop')) return location.replace('desktop.html');
       if (p.has('mobile'))  return location.replace('mobile.html');
 
-      // Respect a remembered choice (optional)
+      // Remembered choice
       const choice = localStorage.getItem('forceView');
       if (choice === 'desktop') return location.replace('desktop.html');
       if (choice === 'mobile')  return location.replace('mobile.html');
 
-      // Heuristics: user-agent + current viewport
-      const ua = navigator.userAgent || navigator.vendor || '';
+      // --- Detection helpers ---
+      const ua = navigator.userAgent || '';
+      const uaData = navigator.userAgentData || null;
+
+      // 1) If the browser explicitly claims "not mobile" via UA Client Hints,
+      //    respect that (covers Chrome "Desktop site" on Android).
+      const saysDesktopByHints = !!(uaData && uaData.mobile === false);
+
+      // 2) Classic mobile UA check
       const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
 
-      // Width check (covers resized desktop windows & tablets)
-      const isNarrow = Math.min(window.innerWidth, window.innerHeight) <= 820; // tweak threshold if you want
+      // 3) Touch/Coarse pointer (fallback for weird UAs)
+      const hasCoarsePointer = window.matchMedia && matchMedia('(pointer:coarse)').matches;
+      const hasTouch = (navigator.maxTouchPoints || 0) > 0;
 
-      // Final decision
-      const goMobile = isMobileUA || isNarrow;
-      location.replace(goMobile ? 'mobile.html' : 'desktop.html');
+      // 4) Viewport heuristic (handles resized windows/tablets)
+      const isNarrow = Math.min(window.innerWidth, window.innerHeight) <= 820;
+
+      // --- Decision rules ---
+      // Respect explicit desktop request first.
+      // If UA says desktop (via hints or desktop UA strings), go desktop.
+      const uaLooksDesktop =
+        saysDesktopByHints ||
+        /(Windows NT|Macintosh|X11;|CrOS)/.test(ua) && !/Mobile/i.test(ua);
+
+      // Final choice:
+      // - If UA looks desktop => desktop
+      // - Else if classic mobile UA OR coarse/touch and narrow => mobile
+      // - Else desktop
+      const goDesktop = uaLooksDesktop
+        ? true
+        : !(isMobileUA || ((hasCoarsePointer || hasTouch) && isNarrow));
+
+      location.replace(goDesktop ? 'desktop.html' : 'mobile.html');
     })();
   </script>
   <noscript>
-    <!-- No JS? Fall back to desktop, with a visible link to mobile -->
+    <!-- No JS fallback: default to desktop with a visible link to mobile -->
     <meta http-equiv="refresh" content="0; url=desktop.html">
+    <p>If you need the mobile version, <a href="mobile.html">tap here</a>.</p>
   </noscript>
 </head>
 <body></body>
